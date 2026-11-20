@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from biblioteca_fastapi.models import User
+from fastapi_zero.models import User
 
 
 def test_create_user(session, mock_db_time):

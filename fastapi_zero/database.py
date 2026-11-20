@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from biblioteca_fastapi.settings import Settings
+from fastapi_zero.settings import Settings
 
 engine = create_engine(Settings().DATABASE_URL)
 

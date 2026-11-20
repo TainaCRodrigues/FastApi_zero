@@ -7,9 +7,10 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from biblioteca_fastapi.app import app
-from biblioteca_fastapi.database import get_session
-from biblioteca_fastapi.models import Base, User
+from fastapi_zero.app import app
+from fastapi_zero.database import get_session
+from fastapi_zero.models import Base, User
+from fastapi_zero.security import get_password_hash
 
 
 # ele transforma essa função pra ser reutilizada para todos
@@ -61,8 +62,20 @@ def mock_db_time():
 
 @pytest.fixture
 def user(session):
-    user = User(username='Teste', email='test@test.com', password='mysenha')
+    password = 'mysenha'
+    user = User(username='Teste', email='test@test.com', password=get_password_hash(password))
     session.add(user)
     session.commit()
     session.refresh(user)
+
+    user.clean_password = password
     return user
+
+
+@pytest.fixture
+def token(client, user):
+    response = client.post(
+        '/token',
+        data={'username': user.email, 'password': user.clean_password}
+    )
+    return response.json()['access_token']
